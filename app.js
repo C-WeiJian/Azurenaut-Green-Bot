@@ -68,8 +68,8 @@ var options = {
 
 bot.dialog('/sayHi', [
     function (session){
-        locationDialog.getLocation(session, options);
-        //builder.Prompts.text(session, "Send me your current location.");
+        //locationDialog.getLocation(session, options);
+        builder.Prompts.text(session, "Send me your current location.");
     },
     function (session, results) {
         session.send("getting coordinates");

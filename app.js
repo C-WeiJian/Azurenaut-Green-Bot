@@ -64,6 +64,7 @@ function HaversineInKM(lat1, long1, lat2, long2)
 
 function createHeroCard(session, block, street, postal, lat1, lon1, lat2, lon2) {
     var distance = HaversineInKM(lat1, lon1, lat2, lon2);
+    var cards = [];
     return new builder.HeroCard(session)
         .title(block+" "+street)
         .subtitle("Postal code: "+postal)
@@ -75,7 +76,7 @@ function createHeroCard(session, block, street, postal, lat1, lon1, lat2, lon2) 
         .buttons([
                 // Pressing this button opens a url to google maps
                 builder.CardAction.openUrl(session, "", "Go there")
-            ]);
+    ]);
 }
 
 bot.dialog('/', intents);
@@ -105,11 +106,18 @@ bot.dialog('/sayHi', [
         //             lat = 1.28297;
         //             lon = 103.8524;
 
+        //             var cards = [];
+
         //             for (i = 1; i < body.SrchResults.length; i++) {
         //                 var str = body.SrchResults[i].LatLng;
         //                 var res = str.split(",");
-        //                 createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]);
+        //                 cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
         //             }
+        //             var msg = new builder.Message(session)
+        //                 .textFormat(builder.TextFormat.xml)
+        //                 .attachmentLayout(builder.AttachmentLayout.carousel)
+        //                 .attachments(cards);
+        //             session.send(msg);
         //         });
 
         builder.Prompts.text(session, "Send me your current location.");
@@ -138,12 +146,18 @@ bot.dialog('/sayHi', [
                     console.log(body);
                     session.send(body.SrchResults[1].NAME);
 
+                    var cards = [];
+
                     for (i = 1; i < body.SrchResults.length; i++) {
                         var str = body.SrchResults[i].LatLng;
                         var res = str.split(",");
-                        var directions = "https://www.google.com/maps?saddr=My+Location&daddr="+res[0]+","+res[1];
-                        createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]);
+                        cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
                     }
+                    var msg = new builder.Message(session)
+                        .textFormat(builder.TextFormat.xml)
+                        .attachmentLayout(builder.AttachmentLayout.carousel)
+                        .attachments(cards);
+                    session.send(msg);
                 }).catch(function (err){
                     // An error occurred and the request failed
                     console.log(err.message);

@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "botbuilder": "^3.5.1",
+    "botbuilder-location": "^1.0.2",
     "request-promise": "^4.1.1",
     "restify": "^4.3.0"
   }

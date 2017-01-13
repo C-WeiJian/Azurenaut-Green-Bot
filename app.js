@@ -63,9 +63,9 @@ bot.dialog('/sayHi', [
     function (session) {
         if(session.message.entities.length != 0){
             session.userData.lat = session.message.entities[0].geo.latitude;
-            session.userData.lon = session.message.entities[0].geo.longitude;
-            var lattt = session.message.entities[0].geo.longitude;
-            session.endDialog(lattt);
+            var lon = session.message.entities[0].geo.longitude;
+            //var lattt = session.message.entities[0].geo.longitude;
+            session.endDialog(lon);
         }else{
             session.endDialog("Sorry, I didn't get your location.");
         }

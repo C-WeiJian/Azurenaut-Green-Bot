@@ -3,7 +3,7 @@ var restify = require('restify');
 var builder = require('botbuilder');
 
 var rp = require('request-promise');
-var locationDialog = require('botbuilder-location');
+//var locationDialog = require('botbuilder-location');
 
 // Static variables that we can use anywhere in app.js
 var BINGNEWSKEY = 'cbfe538a5a9a44b0ae989bdaa13507df';
@@ -64,7 +64,8 @@ bot.dialog('/sayHi', [
         if(session.message.entities.length != 0){
             session.userData.lat = session.message.entities[0].geo.latitude;
             session.userData.lon = session.message.entities[0].geo.longitude;
-            session.endDialog();
+            var latt = session.message.entities[0].geo.longitude;
+            session.endDialog(lattt);
         }else{
             session.endDialog("Sorry, I didn't get your location.");
         }

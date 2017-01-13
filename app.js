@@ -71,9 +71,15 @@ bot.dialog('/sayHi', [
         //locationDialog.getLocation(session, options);
         builder.Prompts.text(session, "Send me your current location.");
     },
-    function (session, results) {
+    function (session) {
         session.send("getting coordinates");
-        session.send(results.response);
+        //session.send(results.response);
+        if(session.message.entities.length != 0){
+            session.send("getting for real");
+            session.userData.lat = session.message.entities[0].geo.latitude;
+            session.userData.lon = session.message.entities[0].geo.longitude;
+            session.endDialog();
+        }
         if(results.messageobj.type=='location'){
             session.send("location received");
             var lat = results.messageobj.latitude;

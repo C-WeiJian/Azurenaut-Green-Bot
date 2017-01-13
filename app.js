@@ -59,7 +59,7 @@ bot.dialog('/sayHi', [
     },
     function(session, results){
         console.log(results);
-        session.endDialog("Nice to meet you " + results.longitude);
+        session.endDialog("Nice to meet you " + results.messageobj.longitude);
     }
 ])
 

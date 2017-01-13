@@ -3,11 +3,12 @@ var restify = require('restify');
 var builder = require('botbuilder');
 
 var rp = require('request-promise');
-//var locationDialog = require('botbuilder-location');
+var locationDialog = require('botbuilder-location');
 
 // Static variables that we can use anywhere in app.js
 var BINGNEWSKEY = 'cbfe538a5a9a44b0ae989bdaa13507df';
 var BINGCVKEY = 'a5ac77a11c4d4143be4b902dfd0724e8';
+
 //=========================================================
 // Bot Setup
 //=========================================================
@@ -56,9 +57,22 @@ function MessageHandler(context, event) {
 
 bot.dialog('/', intents);
 
+//locationDialog.create(bot);
+bot.library(locationDialog.createLibrary("Avk7vrPfKhrsEOu4Gmzx1ASa7eIEvEWqvrtkFjh0VBxuZ9RNj_FHeW2emKD57XFU"));
+var options = {
+    prompt: "Where should I ship your order? Type or say an address.",
+    useNativeControl: true,
+    reverseGeocode: false
+};
+
+
 bot.dialog('/sayHi', [
     function (session){
-        builder.Prompts.text(session, "Send me your current location.");
+        locationDialog.getLocation(session, options);
+        //builder.Prompts.text(session, "Send me your current location.");
+    },
+    function (session, results) {
+        session.endDialog(results.point[0])
     },
     function (session) {
         if(session.message.entities.length != 0){

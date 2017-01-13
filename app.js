@@ -153,6 +153,7 @@ bot.dialog('/sayHi', [
                     for (i = 1; i < body.SrchResults.length; i++) {
                         var str = body.SrchResults[i].LatLng;
                         var res = str.split(",");
+                        session.send(res[1]);
                         cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
                     }
                     var msg = new builder.Message(session)

@@ -46,18 +46,32 @@ intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you
 
 // This is called the root dialog. It is the first point of entry for any message the bot receives
 
-function MessageHandler(context, event) {
-    if(event.messageobj.type=='location'){
-          var lat = event.messageobj.latitude;
-          var lang = event.messageobj.longitude;
-          var url = event.message;
-          context.sendResponse("Your lat:"+lat+"\n Your lang:"+lang+"\n MapURL:"+url);
-    }
+var _eQuatorialEarthRadius = 6378.1370;
+var _d2r = (Math.PI / 180.0);
+
+function HaversineInKM(lat1, long1, lat2, long2)
+{
+    var dlong = (long2 - long1) * _d2r;
+    var dlat = (lat2 - lat1) * _d2r;
+    var a = Math.pow(Math.sin(dlat / 2.0), 2.0) + Math.cos(lat1 * _d2r) * Math.cos(lat2 * _d2r) * Math.pow(Math.sin(dlong / 2.0), 2.0);
+    var c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+    var d = _eQuatorialEarthRadius * c;
+
+    return d;
+}
+
+function createHeroCard(session, block, street, postal, lat1, lon1, lat2, lon2) {
+    var distance = HaversineInKM(lat1, lon1, lat2, lon2);
+    return new builder.HeroCard(session)
+        .title(block+" "+street)
+        .subtitle("Postal code: "+postal)
+        .text("Distance from here: "+distance)
+        .images(getSampleCardImages(session))
+        .buttons(getSampleCardActions(session));
 }
 
 bot.dialog('/', intents);
 
-//locationDialog.create(bot);
 bot.library(locationDialog.createLibrary("Avk7vrPfKhrsEOu4Gmzx1ASa7eIEvEWqvrtkFjh0VBxuZ9RNj_FHeW2emKD57XFU"));
 var options = {
     prompt: "Where should I ship your order? Type or say an address.",
@@ -68,7 +82,6 @@ var options = {
 
 bot.dialog('/sayHi', [
     function (session){
-        //locationDialog.getLocation(session, options);
         builder.Prompts.text(session, "Send me your current location.");
     },
     function (session) {
@@ -93,8 +106,13 @@ bot.dialog('/sayHi', [
                 rp(options).then(function (body){
                     // The request is successful
                     console.log(body);
-                    session.send(body.NAME);
-                    //sendTopNews(session, results, body);
+                    session.send(body.SrchResults[1].NAME);
+
+                    for (i = 1; i < body.SrchResults.length; i++) {
+                        var str = body.SrchResults[i].LatLng;
+                        var res = str.split(",");
+                        createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]);
+                    }
                 }).catch(function (err){
                     // An error occurred and the request failed
                     console.log(err.message);

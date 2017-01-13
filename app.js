@@ -72,11 +72,13 @@ bot.dialog('/sayHi', [
         //builder.Prompts.text(session, "Send me your current location.");
     },
     function (session, results) {
+        session.send("getting coordinates");
         if(results.messageobj.type=='location'){
-          var lat = results.messageobj.latitude;
-          var lang = results.messageobj.longitude;
-          var url = results.message;
-          session.sendResponse("Your lat:"+lat+"\n Your lang:"+lang+"\n MapURL:"+url);
+            session.send("location received");
+            var lat = results.messageobj.latitude;
+            var lang = results.messageobj.longitude;
+            var url = results.message;
+            session.sendResponse("Your lat:"+lat+"\n Your lang:"+lang+"\n MapURL:"+url);
         }
         //session.endDialog("end"+results.response.point);
     },

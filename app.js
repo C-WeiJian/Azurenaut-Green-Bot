@@ -77,7 +77,7 @@ bot.dialog('/sayHi', [
         if(session.message.entities.length != 0){
             session.send("getting for real");
             var lat = session.message.entities[0].geo.latitude;
-            session.userData.lon = session.message.entities[0].geo.longitude;
+            var lon = session.message.entities[0].geo.longitude;
             session.endDialog();
         }
         // if(results.messageobj.type=='location'){
@@ -87,7 +87,7 @@ bot.dialog('/sayHi', [
         //     var url = results.message;
         //     session.sendResponse("Your lat:"+lat+"\n Your lang:"+lang+"\n MapURL:"+url);
         // }
-        session.endDialog("end"+lat);
+        session.endDialog(lat+", "+lon);
     },
     function (session) {
         if(session.message.entities.length != 0){

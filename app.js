@@ -61,7 +61,7 @@ bot.dialog('/', intents);
 bot.library(locationDialog.createLibrary("Avk7vrPfKhrsEOu4Gmzx1ASa7eIEvEWqvrtkFjh0VBxuZ9RNj_FHeW2emKD57XFU"));
 var options = {
     prompt: "Where should I ship your order? Type or say an address.",
-    useNativeControl: true,
+    useNativeControl: false,
     reverseGeocode: false
 };
 

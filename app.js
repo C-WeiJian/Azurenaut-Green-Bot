@@ -91,34 +91,34 @@ var options = {
 
 bot.dialog('/sayHi', [
     function (session){
-        // var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents=1.2729769,%20103.842437,1.2929769,%20103.862437";
-        //     // Build options for the request
-        //     var options = {
-        //         uri: url,
-        //         json: true // Returns the response in json
-        //     }
-        //     //Make the call
-        //         rp(options).then(function (body){
-        //             // The request is successful
-        //             console.log(body);
-        //             session.send(body.SrchResults[1].NAME);
+        var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents=1.2729769,%20103.842437,1.2929769,%20103.862437";
+            // Build options for the request
+            var options = {
+                uri: url,
+                json: true // Returns the response in json
+            }
+            //Make the call
+                rp(options).then(function (body){
+                    // The request is successful
+                    console.log(body);
+                    session.send(body.SrchResults[1].NAME);
 
-        //             lat = 1.28297;
-        //             lon = 103.8524;
+                    lat = 1.28297;
+                    lon = 103.8524;
 
-        //             var cards = [];
+                    var cards = [];
 
-        //             for (i = 1; i < body.SrchResults.length; i++) {
-        //                 var str = body.SrchResults[i].LatLng;
-        //                 var res = str.split(",");
-        //                 cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
-        //             }
-        //             var msg = new builder.Message(session)
-        //                 .textFormat(builder.TextFormat.xml)
-        //                 .attachmentLayout(builder.AttachmentLayout.carousel)
-        //                 .attachments(cards);
-        //             session.send(msg);
-        //         });
+                    for (i = 1; i < body.SrchResults.length; i++) {
+                        var str = body.SrchResults[i].LatLng;
+                        var res = str.split(",");
+                        cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
+                    }
+                    var msg = new builder.Message(session)
+                        .textFormat(builder.TextFormat.xml)
+                        .attachmentLayout(builder.AttachmentLayout.carousel)
+                        .attachments(cards);
+                    session.send(msg);
+                });
 
         builder.Prompts.text(session, "Send me your current location.");
     },
@@ -150,7 +150,7 @@ bot.dialog('/sayHi', [
 
                     var list = body.SrchResults.length;
                     if (body.SrchResults.length > 5) list = 5;
-                    
+
                     for (i = 1; i < list; i++) {
                         var str = body.SrchResults[i].LatLng;
                         var res = str.split(",");

@@ -79,8 +79,29 @@ bot.dialog('/sayHi', [
             var lat = session.message.entities[0].geo.latitude;
             var lon = session.message.entities[0].geo.longitude;
             session.endDialog(lat+", "+lon);
+            var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents=1.291789,%20103.7796402,1.3290461,%20103.8726032&extents";
+            // Build options for the request
+            var options = {
+                uri: url,
+                // headers: {
+                //     'Ocp-Apim-Subscription-Key': BINGNEWSKEY
+                // },
+                json: true // Returns the response in json
+            }
+            //Make the call
+                rp(options).then(function (body){
+                    // The request is successful
+                    console.log(body);
+                    //sendTopNews(session, results, body);
+                }).catch(function (err){
+                    // An error occurred and the request failed
+                    console.log(err.message);
+                    session.send("Argh, something went wrong. :( Try again?");
+                }).finally(function () {
+                    // This is executed at the end, regardless of whether the request is successful or not
+                    session.endDialog();
+                });
         }
-        
         else{
             session.endDialog("Sorry, I didn't get your location.");
         }
@@ -169,46 +190,11 @@ function sendTopNews(session, results, body){
 }
 
 bot.dialog('/giveImageAnalysis', [
-    function (session){
-        // Ask the user which category they would like
-        // Choices are separated by |
-        builder.Prompts.choice(session, "Which category would you like?", "Technology|Science|Sports|Business|Entertainment|Politics|Health|World|(quit)");
-    }, function (session, results, next){
-        // The user chose a category
-        if (results.response && results.response.entity !== '(quit)') {
-           //Show user that we're processing their request by sending the typing indicator
-            session.sendTyping();
-            // Build the url we'll be calling to get top news
-            var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents=1.291789,%20103.7796402,1.3290461,%20103.8726032";
-            // Build options for the request
-            var options = {
-                uri: url,
-                // headers: {
-                //     'Ocp-Apim-Subscription-Key': BINGNEWSKEY
-                // },
-                json: true // Returns the response in json
-            }
-            //Make the call
-                rp(options).then(function (body){
-                    // The request is successful
-                    console.log(body);
-                    //sendTopNews(session, results, body);
-                }).catch(function (err){
-                    // An error occurred and the request failed
-                    console.log(err.message);
-                    session.send("Argh, something went wrong. :( Try again?");
-                }).finally(function () {
-                    // This is executed at the end, regardless of whether the request is successful or not
-                    session.endDialog();
-                });
-        } else {
-            // The user choses to quit
-            session.endDialog("Ok. Mission Aborted.");
-        }
-    }
+   function(session){
+       builder.Prompts.attachment(session, "Let me take a look.");
+   },
+   function(session){
+       var imageurl = session.message.attachment.contentUrl;
+       session.endDialog(imageurl);
+   }
 ]);
-
-// bot.dialog('/', function (session) {
-//     // Send 'hello world' to the user
-//     session.send("Hello World");
-// });

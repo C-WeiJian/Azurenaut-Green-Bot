@@ -8,6 +8,8 @@ var locationDialog = require('botbuilder-location');
 // Static variables that we can use anywhere in app.js
 var BINGNEWSKEY = 'cbfe538a5a9a44b0ae989bdaa13507df';
 var BINGCVKEY = 'a5ac77a11c4d4143be4b902dfd0724e8';
+var lat;
+var lon;
 
 //=========================================================
 // Bot Setup
@@ -66,8 +68,14 @@ function createHeroCard(session, block, street, postal, lat1, lon1, lat2, lon2) 
         .title(block+" "+street)
         .subtitle("Postal code: "+postal)
         .text("Distance from here: "+distance)
-        .images(getSampleCardImages(session))
-        .buttons(getSampleCardActions(session));
+        .images([
+                //handle if thumbnail is empty
+                builder.CardImage.create(session, "https://maps.googleapis.com/maps/api/streetview?size=600x300&location=lat2,lon2&heading=151.78&pitch=-0.76&key=AIzaSyCYARhCB17TGsT02YMmrMObH1J0ql7k0Cw")
+            ])
+        .buttons([
+                // Pressing this button opens a url to google maps
+                builder.CardAction.openUrl(session, "", "Go there")
+            ]);
 }
 
 bot.dialog('/', intents);
@@ -82,6 +90,28 @@ var options = {
 
 bot.dialog('/sayHi', [
     function (session){
+        // var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents=1.2729769,%20103.842437,1.2929769,%20103.862437";
+        //     // Build options for the request
+        //     var options = {
+        //         uri: url,
+        //         json: true // Returns the response in json
+        //     }
+        //     //Make the call
+        //         rp(options).then(function (body){
+        //             // The request is successful
+        //             console.log(body);
+        //             session.send(body.SrchResults[1].NAME);
+
+        //             lat = 1.28297;
+        //             lon = 103.8524;
+
+        //             for (i = 1; i < body.SrchResults.length; i++) {
+        //                 var str = body.SrchResults[i].LatLng;
+        //                 var res = str.split(",");
+        //                 createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]);
+        //             }
+        //         });
+
         builder.Prompts.text(session, "Send me your current location.");
     },
     function (session) {
@@ -89,8 +119,8 @@ bot.dialog('/sayHi', [
         //session.send(results.response);
         if(session.message.entities.length != 0){
             session.send("getting for real");
-            var lat = session.message.entities[0].geo.latitude;
-            var lon = session.message.entities[0].geo.longitude;
+            lat = session.message.entities[0].geo.latitude;
+            lon = session.message.entities[0].geo.longitude;
             session.endDialog(lat+", "+lon);
             var upplat = lat+0.01;
             var lowlat = lat-0.01;
@@ -111,6 +141,7 @@ bot.dialog('/sayHi', [
                     for (i = 1; i < body.SrchResults.length; i++) {
                         var str = body.SrchResults[i].LatLng;
                         var res = str.split(",");
+                        var directions = "https://www.google.com/maps?saddr=My+Location&daddr="+res[0]+","+res[1];
                         createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]);
                     }
                 }).catch(function (err){
@@ -210,11 +241,69 @@ function sendTopNews(session, results, body){
 }
 
 bot.dialog('/giveImageAnalysis', [
-   function(session){
-       builder.Prompts.attachment(session, "Let me take a look.");
-   },
-   function(session){
-       var imageurl = session.message.attachment.contentUrl;
-       session.endDialog(imageurl);
-   }
+    function (session){
+        // Ask the user which category they would like
+        // Choices are separated by |
+        builder.Prompts.text(session, "Please send me the url of the Image");
+    }, function (session, results, next){
+        // The user chose a category
+        if (true) {
+           //Show user that we're processing their request by sending the typing indicator
+            session.sendTyping();
+            // Build the url we'll be calling to get top news
+            var url = "https://api.projectoxford.ai/vision/v1.0/tag";
+            // Build options for the request
+            var options = {
+                method: 'POST', // thie API call is a post request
+                uri: url,
+                headers: {
+                    'Ocp-Apim-Subscription-Key': '8f8a8f6cc5904b67ae4ac8e0f8d5dbcc',
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    url: results.response
+                },
+                json: true
+            }
+            
+            //Make the call
+                rp(options).then(function (body){
+                    // The request is successful
+                    console.log(body);
+                    imageresults(session, results, body);
+                }).catch(function (err){
+                    // An error occurred and the request failed
+                    console.log(err.message);
+                    session.send("Argh, something went wrong. :( Try again?");
+                }).finally(function () {
+                    // This is executed at the end, regardless of whether the request is successful or not
+                    session.endDialog();
+                });
+        } else {
+            // The user choses to quit
+            session.endDialog("Ok. Mission Aborted.");
+        }
+    }
 ]);
+
+function imageresults(session, results, body){
+    //session.send("Top news in " + results.response.entity + ": ");
+    //Show user that we're processing by sending the typing indicator
+    session.sendTyping();
+    // The value property in body contains an array of all the returned articles
+    var allArticles = body.tags;
+    var finalresults = false;
+    // Iterate through all 10 articles returned by the API
+    for (var i = 0; i < 3; i++){
+        var article = allArticles[i].name;
+        if(article == "drink" || article == "beverage" || article == "soft drink"){
+            finalresults = true;
+        }
+    }
+    if(finalresults){
+        session.endDialog("Recycle");
+    }
+    else{
+        session.endDialog("oh its nnothing");
+    }  
+}

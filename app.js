@@ -55,19 +55,11 @@ bot.dialog('/', intents);
 
 bot.dialog('/sayHi', [
     function (session){
-        builder.Prompts.text(session, "Hello there,  What's your name?");
-    }, 
-    function MessageHandler(context, event) {
-    if(event.messageobj.type=='location'){
-          var lat = event.messageobj.latitude;
-          var lang = event.messageobj.longitude;
-          var url = event.message;
-          context.sendResponse("Your lat:"+lat+"\n Your lang:"+lang+"\n MapURL:"+url);
-    }
-},
+        builder.Prompts.text(session, "Hello there,  give me your location");
+    },
     function(session, results){
         console.log(results);
-        session.endDialog("Nice to meet you " + results.response + "!");
+        session.endDialog("Nice to meet you " + results.longitude);
     }
 ])
 

@@ -72,7 +72,7 @@ bot.dialog('/sayHi', [
         //builder.Prompts.text(session, "Send me your current location.");
     },
     function (session, results) {
-        session.endDialog(results.point);
+        session.endDialog("end"+results.point);
     },
     function (session) {
         if(session.message.entities.length != 0){

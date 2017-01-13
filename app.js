@@ -73,7 +73,7 @@ bot.dialog('/sayHi', [
     },
     function (session, results) {
         session.send("getting coordinates");
-        session.send(results.messageobj.type);
+        session.send(results.type);
         if(results.messageobj.type=='location'){
             session.send("location received");
             var lat = results.messageobj.latitude;

@@ -57,23 +57,19 @@ function MessageHandler(context, event) {
 bot.dialog('/', intents);
 
 bot.dialog('/sayHi', [
-    function (session){ 
-        var options = {
-            prompt: "Where should I ship your order? Type or say an address.",
-            useNativeControl: true
-        };
-        locationDialog.getLocation(session, options);
+    function (session){
+        builder.Prompts.text(session, "Send me your current location.");
     },
-    function (session, results) {
-        if (results.response) {
-            var place = results.response;
-            session.send(place.longitude);
-        }
-        else {
-            session.send("OK, I won't be shipping it");
+    function (session) {
+        if(session.message.entities.length != 0){
+            session.userData.lat = session.message.entities[0].geo.latitude;
+            session.userData.lon = session.message.entities[0].geo.longitude;
+            session.endDialog();
+        }else{
+            session.endDialog("Sorry, I didn't get your location.");
         }
     }
-])
+]);
 
 bot.dialog('/giveNews', [
     function (session){

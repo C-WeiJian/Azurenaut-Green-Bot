@@ -78,16 +78,12 @@ bot.dialog('/sayHi', [
             session.send("getting for real");
             var lat = session.message.entities[0].geo.latitude;
             var lon = session.message.entities[0].geo.longitude;
-            session.endDialog();
+            session.endDialog(lat+", "+lon);
         }
-        // if(results.messageobj.type=='location'){
-        //     session.send("location received");
-        //     var lat = results.messageobj.latitude;
-        //     var lang = results.messageobj.longitude;
-        //     var url = results.message;
-        //     session.sendResponse("Your lat:"+lat+"\n Your lang:"+lang+"\n MapURL:"+url);
-        // }
-        session.endDialog(lat+", "+lon);
+        
+        else{
+            session.endDialog("Sorry, I didn't get your location.");
+        }
     },
     function (session) {
         if(session.message.entities.length != 0){

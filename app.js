@@ -148,7 +148,7 @@ bot.dialog('/sayHi', [
 
                     var cards = [];
 
-                    session.send(body.SrchResults.length);
+                    //session.send(body.SrchResults.length);
 
                     for (i = 1; i < body.SrchResults.length; i++) {
                         var str = body.SrchResults[i].LatLng;

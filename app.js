@@ -41,12 +41,31 @@ intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you
 //=========================================================
 
 // This is called the root dialog. It is the first point of entry for any message the bot receives
+
+function MessageHandler(context, event) {
+    if(event.messageobj.type=='location'){
+          var lat = event.messageobj.latitude;
+          var lang = event.messageobj.longitude;
+          var url = event.message;
+          context.sendResponse("Your lat:"+lat+"\n Your lang:"+lang+"\n MapURL:"+url);
+    }
+}
+
 bot.dialog('/', intents);
 
 bot.dialog('/sayHi', [
     function (session){
         builder.Prompts.text(session, "Hello there,  What's your name?");
-    }, function(session, results){
+    }, 
+    function MessageHandler(context, event) {
+    if(event.messageobj.type=='location'){
+          var lat = event.messageobj.latitude;
+          var lang = event.messageobj.longitude;
+          var url = event.message;
+          context.sendResponse("Your lat:"+lat+"\n Your lang:"+lang+"\n MapURL:"+url);
+    }
+},
+    function(session, results){
         console.log(results);
         session.endDialog("Nice to meet you " + results.response + "!");
     }

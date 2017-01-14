@@ -71,7 +71,7 @@ function createHeroCard(session, block, street, postal, lat1, lon1, lat2, lon2) 
         .text("Distance from here: "+distance)
         .images([
                 //handle if thumbnail is empty
-                builder.CardImage.create(session, "https://maps.googleapis.com/maps/api/streetview?size=600x300&location=lat2,lon2&heading=151.78&pitch=-0.76&key=AIzaSyCYARhCB17TGsT02YMmrMObH1J0ql7k0Cw")
+                builder.CardImage.create(session, "https://maps.googleapis.com/maps/api/streetview?size=600x300&location="+lat2+","+lon2+"&heading=151.78&pitch=-0.76&key=AIzaSyCJkSMIsK3ZPQHrBByW_nJTlamB3Bqe5JY")
             ])
         .buttons([
                 // Pressing this button opens a url to google maps
@@ -141,47 +141,37 @@ bot.dialog('/sayHi', [
                 json: true // Returns the response in json
             }
             //Make the call
-                rp(options).then(function (body){
-                    // The request is successful
-                    console.log(body);
-                    session.send(body.SrchResults[1].NAME);
+            rp(options).then(function (body){
+                // The request is successful
+                console.log(body);
+                session.send(body.SrchResults[1].NAME);
 
-                    var cards = [];
+                var cards = [];
 
-                    var list = body.SrchResults.length;
-                    if (body.SrchResults.length > 5) list = 5;
+                var list = body.SrchResults.length;
+                if (body.SrchResults.length > 5) list = 5;
 
-                    for (i = 1; i < list; i++) {
-                        var str = body.SrchResults[i].LatLng;
-                        var res = str.split(",");
-                        session.send(res[1]);
-                        cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
-                    }
-                    var msg = new builder.Message(session)
-                        .textFormat(builder.TextFormat.xml)
-                        .attachmentLayout(builder.AttachmentLayout.carousel)
-                        .attachments(cards);
-                    session.send(msg);
-                }).catch(function (err){
-                    // An error occurred and the request failed
-                    console.log(err.message);
-                    session.send("Argh, something went wrong. :( Try again?");
-                }).finally(function () {
-                    // This is executed at the end, regardless of whether the request is successful or not
-                    session.endDialog();
-                });
+                for (i = 1; i < list; i++) {
+                    var str = body.SrchResults[i].LatLng;
+                    var res = str.split(",");
+                    session.send(res[1]);
+                    cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
+                }
+                var msg = new builder.Message(session)
+                    .textFormat(builder.TextFormat.xml)
+                    .attachmentLayout(builder.AttachmentLayout.carousel)
+                    .attachments(cards);
+                session.send(msg);
+            }).catch(function (err){
+                // An error occurred and the request failed
+                console.log(err.message);
+                session.send("Argh, something went wrong. :( Try again?");
+            }).finally(function () {
+                // This is executed at the end, regardless of whether the request is successful or not
+                session.endDialog();
+            });
         }
         else{
-            session.endDialog("Sorry, I didn't get your location.");
-        }
-    },
-    function (session) {
-        if(session.message.entities.length != 0){
-            session.userData.lat = session.message.entities[0].geo.latitude;
-            var lon = session.message.entities[0].geo.longitude;
-            //var lattt = session.message.entities[0].geo.longitude;
-            session.endDialog(lon);
-        }else{
             session.endDialog("Sorry, I didn't get your location.");
         }
     }

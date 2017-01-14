@@ -129,7 +129,7 @@ bot.dialog('/sayNo',[
             .textFormat(builder.TextFormat.xml)
             .attachmentLayout(builder.AttachmentLayout.carousel)
             .attachments(cards);
-        session.send(msg);}
+        session.endDialog(msg);}
         want = false;
     }
 ]);

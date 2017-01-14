@@ -105,10 +105,10 @@ bot.dialog('/sayHi', [
                         session.send("Argh, something went wrong. :( Try again?");
                 }).finally(function () {
                         // This is executed at the end, regardless of whether the request is successful or not
-                        session.endDialog();
+                        //session.endDialog();
                 });
             } while (true);
-            
+            session.endDialog();
         }
         else{
             session.endDialog("Sorry, I didn't get your location.");

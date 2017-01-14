@@ -100,10 +100,10 @@ bot.dialog('/sayHi', [
             lat = session.message.entities[0].geo.latitude;
             lon = session.message.entities[0].geo.longitude;
             // session.endDialog(lat+", "+lon);
-            var upplat = lat+0.01;
-            var lowlat = lat-0.01;
-            var upplon = lon+0.01;
-            var lowlon = lon-0.01;
+            var upplat = lat+0.1;
+            var lowlat = lat-0.1;
+            var upplon = lon+0.1;
+            var lowlon = lon-0.1;
             var results = 0;
             while (results < 5) {
                 session.send("in while loop");

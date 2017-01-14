@@ -147,26 +147,7 @@ bot.dialog('/sayHi', [
             rp(options).then(function (body){
                 // The request is successful
                 console.log(body);
-                //session.send(body.SrchResults[1].NAME);
-
                 showLocationCards(session, body);
-
-                // var cards = [];
-
-                // var list = body.SrchResults.length;
-                // if (body.SrchResults.length > 5) list = 5;
-
-                // for (i = 1; i < list; i++) {
-                //     var str = body.SrchResults[i].LatLng;
-                //     var res = str.split(",");
-                //     session.send(res[1]);
-                //     cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
-                // }
-                // var msg = new builder.Message(session)
-                //     .textFormat(builder.TextFormat.xml)
-                //     .attachmentLayout(builder.AttachmentLayout.carousel)
-                //     .attachments(cards);
-                // session.send(msg);
             }).catch(function (err){
                 // An error occurred and the request failed
                 console.log(err.message);
@@ -260,13 +241,8 @@ function showLocationCards(session, body) {
     for (i = 1; i < 6; i++) {
         var str = body.SrchResults[i].LatLng;
         var res = str.split(",");
-        session.send(res[1]);
-        session.send(body.SrchResults[i].ADDRESSSTREETNAME)
-
-        var distance = HaversineInKM(lat, lon, res[0], res[1]);
-        distance.toFixed(2);
-        session.send("gonna try building cards");
-    
+        var distance = HaversineInKM(lat, lon, res[0], res[1]).toFixed(2);
+        
         cards.push(new builder.HeroCard(session)
             .title(body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER+" "+body.SrchResults[i].ADDRESSSTREETNAME)
             .subtitle("Distance from here: "+distance+" km")
@@ -284,7 +260,6 @@ function showLocationCards(session, body) {
         .attachmentLayout(builder.AttachmentLayout.carousel)
         .attachments(cards);
     session.send(msg);
-    session.send("done");
 }
 
 bot.dialog('/giveImageAnalysis', [

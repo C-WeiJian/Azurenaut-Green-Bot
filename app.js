@@ -10,6 +10,15 @@ var lat;
 var lon;
 var _eQuatorialEarthRadius = 6378.1370;
 var _d2r = (Math.PI / 180.0);
+var fact1 = "Do you know that mixing food with recyclables would contaminate the lot? 39% of recyclables were discarded because of contamination.";
+var fact2 = "Here’s how paper recycling works: At recycling facilities, waste paper is shredded, soaked in vats, and made into pulp. The pulp is fed into a machine to be made into new sheets of paper!";
+var fact3 = "Recycled glass is first sorted at the facility based on colour, then cleaned and crushed into cullets, which are melted to form new products.";
+var fact4 = "Do you know that NEA requires recyclables and waste to be collected separately and in separate trucks?";
+var fact5 = "The domestic recycling rate fell to 19 per cent in 2014 from 22 per cent in 2010 :( So keep recycling!";
+var fact6 = "Do remember to thoroughly rinse or empty all recyclables before you send them for recycling.";
+var fact7 = "Waste that has been contaminated with food such as waxed paper, used styrofoam or disposable plastic containers cannot be recycled. Cassette tapes, light bulbs, window glass, ceramics & tissue paper are also not recyclable.";
+var facts = [fact1, fact2, fact3, fact4, fact5, fact6, fact7];
+
 
 //=========================================================
 // Bot Setup
@@ -38,6 +47,7 @@ var intents = new builder.IntentDialog({recognizers:[recogniser]});
 intents.matches(/\b(hi|hello|hey|sup)\b/i,'/sayHi');
 intents.matches('getNews', "/giveNews");
 intents.matches('analyseImage', "/giveImageAnalysis");
+intents.matches('getFunFact','/funFact')
 intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you said."))
 
 
@@ -63,13 +73,17 @@ bot.dialog('/sayHi', [
             lat = session.message.entities[0].geo.latitude;
             lon = session.message.entities[0].geo.longitude;
             var results = 0;
+            var upplat = lat+0.01;
+            var lowlat = lat-0.01;
+            var upplon = lon+0.01;
+            var lowlon = lon-0.01;
 
             // session.endDialog(lat+", "+lon);
             do{
-                var upplat = lat+0.01;
-                var lowlat = lat-0.01;
-                var upplon = lon+0.01;
-                var lowlon = lon-0.01;
+                upplat = upplat+0.01;
+                lowlat = lowlat-0.01;
+                upplon = upplon+0.01;
+                lowlon = lowlon-0.01;
            // 
             
                 var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents="+lowlat+",%20"+lowlon+","+upplat+",%20"+upplon;
@@ -272,6 +286,13 @@ function imageresults(session, results, body){
         session.endDialog("oh its nothing");
     }  
 }
+
+bot.dialog('/funFact', [
+    function (session) {
+        var index = (int) (Math.random()*7);
+        session.send(facts[index]);
+    }
+]);
 
 function HaversineInKM(lat1, long1, lat2, long2)
 {

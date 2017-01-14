@@ -147,22 +147,24 @@ bot.dialog('/sayHi', [
                 console.log(body);
                 session.send(body.SrchResults[1].NAME);
 
-                var cards = [];
+                showLocationCards(session, body);
 
-                var list = body.SrchResults.length;
-                if (body.SrchResults.length > 5) list = 5;
+                // var cards = [];
 
-                for (i = 1; i < list; i++) {
-                    var str = body.SrchResults[i].LatLng;
-                    var res = str.split(",");
-                    session.send(res[1]);
-                    cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
-                }
-                var msg = new builder.Message(session)
-                    .textFormat(builder.TextFormat.xml)
-                    .attachmentLayout(builder.AttachmentLayout.carousel)
-                    .attachments(cards);
-                session.send(msg);
+                // var list = body.SrchResults.length;
+                // if (body.SrchResults.length > 5) list = 5;
+
+                // for (i = 1; i < list; i++) {
+                //     var str = body.SrchResults[i].LatLng;
+                //     var res = str.split(",");
+                //     session.send(res[1]);
+                //     cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
+                // }
+                // var msg = new builder.Message(session)
+                //     .textFormat(builder.TextFormat.xml)
+                //     .attachmentLayout(builder.AttachmentLayout.carousel)
+                //     .attachments(cards);
+                // session.send(msg);
             }).catch(function (err){
                 // An error occurred and the request failed
                 console.log(err.message);
@@ -241,6 +243,37 @@ function sendTopNews(session, results, body){
                 // Pressing this button opens a url to the actual article
                 builder.CardAction.openUrl(session, article.url, "Full article")
             ]));
+    }
+    var msg = new builder.Message(session)
+        .textFormat(builder.TextFormat.xml)
+        .attachmentLayout(builder.AttachmentLayout.carousel)
+        .attachments(cards);
+    session.send(msg);
+}
+
+function showLocationCards(session, body) {
+    session.send("These are some nearby recycling bin locations.");
+    session.sendTyping();
+    var cards = [];
+    for (i = 1; i < list; i++) {
+        var str = body.SrchResults[i].LatLng;
+        var res = str.split(",");
+        session.send(res[1]);
+
+        var distance = HaversineInKM(lat, lon, res[0], res[1]);
+    
+        cards.push(new builder.HeroCard(session)
+            .title(body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER+" "+body.SrchResults[i].ADDRESSSTREETNAME)
+            .subtitle("Postal code: "+body.SrchResults[i].ADDRESSPOSTALCODE)
+            .text("Distance from here: "+distance)
+            .images([
+                    //handle if thumbnail is empty
+                    builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
+                ])
+            .buttons([
+                    // Pressing this button opens a url to google maps
+                    builder.CardAction.openUrl(session, "", "Go there")
+            ]));    
     }
     var msg = new builder.Message(session)
         .textFormat(builder.TextFormat.xml)

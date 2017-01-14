@@ -106,19 +106,21 @@ bot.dialog('/sayHi', [
                     lat = 1.28297;
                     lon = 103.8524;
 
-                    var cards = [];
+                    // showLocationCards(session, results, body);
+
+                    // var cards = [];
                     
 
-                    for (i = 1; i < body.SrchResults.length; i++) {
-                        var str = body.SrchResults[i].LatLng;
-                        var res = str.split(",");
-                        cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
-                    }
-                    var msg = new builder.Message(session)
-                        .textFormat(builder.TextFormat.xml)
-                        .attachmentLayout(builder.AttachmentLayout.carousel)
-                        .attachments(cards);
-                    session.send(msg);
+                    // for (i = 1; i < body.SrchResults.length; i++) {
+                    //     var str = body.SrchResults[i].LatLng;
+                    //     var res = str.split(",");
+                    //     cards.push(createHeroCard(session, body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER, body.SrchResults[i].ADDRESSSTREETNAME, body.SrchResults[i].ADDRESSPOSTALCODE, lat, lon, res[0], res[1]));
+                    // }
+                    // var msg = new builder.Message(session)
+                    //     .textFormat(builder.TextFormat.xml)
+                    //     .attachmentLayout(builder.AttachmentLayout.carousel)
+                    //     .attachments(cards);
+                    // session.send(msg);
                 });
 
         builder.Prompts.text(session, "Send me your current location.");
@@ -147,7 +149,7 @@ bot.dialog('/sayHi', [
                 console.log(body);
                 session.send(body.SrchResults[1].NAME);
 
-                showLocationCards(session, body);
+                showLocationCards(session, results, body);
 
                 // var cards = [];
 
@@ -251,14 +253,15 @@ function sendTopNews(session, results, body){
     session.send(msg);
 }
 
-function showLocationCards(session, body) {
+function showLocationCards(session, results, body) {
     session.send("These are some nearby recycling bin locations.");
     session.sendTyping();
     var cards = [];
-    for (i = 1; i < 2; i++) {
+    for (i = 1; i < 5; i++) {
         var str = body.SrchResults[i].LatLng;
         var res = str.split(",");
         session.send(res[1]);
+        session.send(body.SrchResults[i].ADDRESSSTREETNAME)
 
         var distance = HaversineInKM(lat, lon, res[0], res[1]);
 

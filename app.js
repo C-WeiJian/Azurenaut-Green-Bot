@@ -147,7 +147,7 @@ bot.dialog('/sayHi', [
             rp(options).then(function (body){
                 // The request is successful
                 console.log(body);
-                session.send(body.SrchResults[1].NAME);
+                //session.send(body.SrchResults[1].NAME);
 
                 showLocationCards(session, body);
 

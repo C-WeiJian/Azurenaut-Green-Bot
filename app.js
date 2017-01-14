@@ -264,19 +264,19 @@ function showLocationCards(session, body) {
         session.send(body.SrchResults[i].ADDRESSSTREETNAME)
 
         var distance = HaversineInKM(lat, lon, res[0], res[1]);
+        distance.toFixed(2);
         session.send("gonna try building cards");
     
         cards.push(new builder.HeroCard(session)
             .title(body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER+" "+body.SrchResults[i].ADDRESSSTREETNAME)
-            .subtitle("Postal code: "+body.SrchResults[i].ADDRESSPOSTALCODE)
-            .text("Distance from here: "+distance)
+            .subtitle("Distance from here: "+distance+" km")
             .images([
                     //handle if thumbnail is empty
                     builder.CardImage.create(session, "https://maps.googleapis.com/maps/api/streetview?size=600x300&location="+res[0]+","+res[1]+"&heading=151.78&pitch=-0.76&key=AIzaSyCJkSMIsK3ZPQHrBByW_nJTlamB3Bqe5JY")
                 ])
             .buttons([
                     // Pressing this button opens a url to google maps
-                    builder.CardAction.openUrl(session, "http://google.com", "Go there")
+                    builder.CardAction.openUrl(session, "https://www.google.com/maps?saddr=My+Location&daddr="+res[0]+","+res[1], "Go there")
             ]));    
     }
     var msg = new builder.Message(session)
@@ -340,17 +340,23 @@ function imageresults(session, results, body){
     // The value property in body contains an array of all the returned articles
     var allArticles = body.tags;
     var finalresults = false;
+    var leng = allArticles.length;
+    console.log(leng);
     // Iterate through all 10 articles returned by the API
-    for (var i = 0; i < 3; i++){
+    for (var i = 0; i < leng; i++){
         var article = allArticles[i].name;
-        if(article == "drink" || article == "beverage" || article == "soft drink"){
-            finalresults = true;
+        var confid = allArticles[i].confidence;
+        if (confid > 0.5){
+            if(article == "drink" || article == "beverage" || article == "soft drink"){
+                finalresults = true;
+            }
         }
     }
     if(finalresults){
         session.endDialog("Recycle");
     }
     else{
-        session.endDialog("oh its nnothing");
+        session.endDialog("oh its nothing");
     }  
 }
+

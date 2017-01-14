@@ -319,7 +319,7 @@ bot.dialog('/giveImageAnalysis', [
                     'Content-Type': 'application/json'
                 },
                 body: {
-                    url: results.response
+                    url: session.message.attachments[0].contentUrl
                 },
                 json: true
             }

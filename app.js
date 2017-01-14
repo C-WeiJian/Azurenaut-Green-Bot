@@ -265,6 +265,17 @@ function showLocationCards(session, body) {
 
         var distance = HaversineInKM(lat, lon, res[0], res[1]);
         session.send("gonna try building cards");
+        session.send(new builder.ThumbnailCard(session)
+            .title("test")
+            .subtitle("test")
+            .images([
+                //handle if thumbnail is empty
+                builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
+            ])
+            .buttons([
+                // Pressing this button opens a url to the actual article
+                builder.CardAction.openUrl(session, "", "Full article")
+            ]));
         cards.push(new builder.ThumbnailCard(session)
             .title("test")
             .subtitle("test")

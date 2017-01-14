@@ -292,6 +292,7 @@ function showLocationCards(session, body) {
         .attachmentLayout(builder.AttachmentLayout.carousel)
         .attachments(cards);
     session.send(msg);
+    session.send("done");
 }
 
 bot.dialog('/giveImageAnalysis', [

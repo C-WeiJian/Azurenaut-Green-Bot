@@ -79,9 +79,58 @@ bot.dialog('/sayNo',[
     function (session) {
         if(want){
         session.send("Awwww. Do tell me if you change your mind.")
-        session.endDialog("Anyway, ")
+        session.send("Anyway, here are some cool things you could do with your used stuff.")
+        var cards = [];
+        cards.push(new builder.HeroCard(session)
+            .title("Here are 25 things you can make with water bottles!")
+            .subtitle("Creative upcycling projects")
+            .images([
+                    //handle if thumbnail is empty
+                    builder.CardImage.create(session, "http://d2droglu4qf8st.cloudfront.net/2015/02/207529/soda-chande-1sm_Medium_ID-863641.jpg?v=863641")
+                ])
+            .buttons([
+                    // Pressing this button opens a url to google maps
+                    builder.CardAction.openUrl(session, "http://www.favecrafts.com/Green-Crafting/14-Easy-to-Make-Water-Bottle-Crafts", "Open article")
+            ])); 
+        cards.push(new builder.HeroCard(session)
+            .title("Turn your soup cans into a fun bowling game!")
+            .subtitle("Creative upcycling projects")
+            .images([
+                    //handle if thumbnail is empty
+                    builder.CardImage.create(session, "http://static.primecp.com/master_images/Papercraft/shredded%20paper%20frame%20art.jpg")
+                ])
+            .buttons([
+                    // Pressing this button opens a url to google maps
+                    builder.CardAction.openUrl(session, "http://www.favecrafts.com/Papercrafts/Shredded-Paper-Framed-Art", "Open article")
+            ]));  
+        cards.push(new builder.HeroCard(session)
+            .title("Make a Denim Pocket Pillow from your old pair of jeans!")
+            .subtitle("Creative upcycling projects")
+            .images([
+                    //handle if thumbnail is empty
+                    builder.CardImage.create(session, "http://irepo.primecp.com/2016/03/275117/Denim-Pocket-Pillow_Large500_ID-1589179.jpg?v=1")
+                ])
+            .buttons([
+                    // Pressing this button opens a url to google maps
+                    builder.CardAction.openUrl(session, "http://www.favecrafts.com/Decorating-Ideas/Denim-Pocket-Pillow", "Open article")
+            ]));   
+        cards.push(new builder.HeroCard(session)
+            .title("Turn your used cans into beverage coasters!")
+            .subtitle("Creative upcycling projects")
+            .images([
+                    //handle if thumbnail is empty
+                    builder.CardImage.create(session, "http://cf.theidearoom.net/wp-content/uploads/2011/06/soda-can-coasters-2_thumb.jpg")
+                ])
+            .buttons([
+                    // Pressing this button opens a url to google maps
+                    builder.CardAction.openUrl(session, "http://www.theidearoom.net/diy-soda-can-coasters", "Open article")
+            ]));  
+        var msg = new builder.Message(session)
+            .textFormat(builder.TextFormat.xml)
+            .attachmentLayout(builder.AttachmentLayout.carousel)
+            .attachments(cards);
+        session.send(msg);}
         want = false;
-    }
     }
 ]);
 

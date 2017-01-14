@@ -48,7 +48,7 @@ intents.matches(/\b(hi|hello|hey|sup)\b/i,'/sayHi');
 intents.matches('getNews', '/giveNews');
 intents.matches('analyseImage', '/giveImageAnalysis');
 intents.matches('getFunFact','/funFact');
-intents.matches(/\b(locations)\b/i,'/getLoc');
+intents.matches(/\b(location)\b/i,'/getLoc');
 intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you said."))
 
 
@@ -71,7 +71,7 @@ bot.dialog('/sayHi', [
 
 bot.dialog('/getLoc', [
     function (session){
-        builder.Prompts.text(session, "Send me your current location.");
+        builder.Prompts.text(session, "Could you send me your location?");
     },
     function (session) {
         session.send("Getting your coordinates...");
@@ -110,77 +110,6 @@ bot.dialog('/getLoc', [
         }
     }
 ]);
-
-bot.dialog('/giveNews', [
-    function (session){
-        // Ask the user which category they would like
-        // Choices are separated by |
-        builder.Prompts.choice(session, "Which category would you like?", "Technology|Science|Sports|Business|Entertainment|Politics|Health|World|(quit)");
-    }, function (session, results, next){
-        // The user chose a category
-        if (results.response && results.response.entity !== '(quit)') {
-           //Show user that we're processing their request by sending the typing indicator
-            session.sendTyping();
-            // Build the url we'll be calling to get top news
-            var url = "https://api.cognitive.microsoft.com/bing/v5.0/news/?" 
-                + "category=" + results.response.entity + "&count=10&mkt=en-US&originalImg=true";
-            // Build options for the request
-            var options = {
-                uri: url,
-                headers: {
-                    'Ocp-Apim-Subscription-Key': BINGNEWSKEY
-                },
-                json: true // Returns the response in json
-            }
-            //Make the call
-                rp(options).then(function (body){
-                    // The request is successful
-                    console.log(body);
-                    sendTopNews(session, results, body);
-                }).catch(function (err){
-                    // An error occurred and the request failed
-                    console.log(err.message);
-                    session.send("Argh, something went wrong. :( Try again?");
-                }).finally(function () {
-                    // This is executed at the end, regardless of whether the request is successful or not
-                    session.endDialog();
-                });
-        } else {
-            // The user choses to quit
-            session.endDialog("Ok. Mission Aborted.");
-        }
-    }
-]);
-
-function sendTopNews(session, results, body){
-    session.send("Top news in " + results.response.entity + ": ");
-    //Show user that we're processing by sending the typing indicator
-    session.sendTyping();
-    // The value property in body contains an array of all the returned articles
-    var allArticles = body.value;
-    var cards = [];
-    // Iterate through all 10 articles returned by the API
-    for (var i = 0; i < 10; i++){
-        var article = allArticles[i];
-        // Create a card for the article and add it to the list of cards we want to send
-        cards.push(new builder.HeroCard(session)
-            .title(article.name)
-            .subtitle(article.datePublished)
-            .images([
-                //handle if thumbnail is empty
-                builder.CardImage.create(session, article.image.contentUrl)
-            ])
-            .buttons([
-                // Pressing this button opens a url to the actual article
-                builder.CardAction.openUrl(session, article.url, "Full article")
-            ]));
-    }
-    var msg = new builder.Message(session)
-        .textFormat(builder.TextFormat.xml)
-        .attachmentLayout(builder.AttachmentLayout.carousel)
-        .attachments(cards);
-    session.send(msg);
-};
 
 function showLocationCards(session, body) {
     session.sendTyping();
@@ -279,7 +208,8 @@ function imageresults(session, results, body){
         }
     }
     if(finalresults){
-        session.endDialog("You can recycle it!");
+        session.endDialog("You can recycle it! There are recycling bins nearby.");
+        session.beginDialog('/getLoc');
     }
     else{
         session.endDialog("Hmmm. I don't think you can recycle this.");

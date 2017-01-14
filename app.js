@@ -48,7 +48,7 @@ intents.matches(/\b(hi|hello|hey|sup)\b/i,'/sayHi');
 intents.matches('getNews', '/giveNews');
 intents.matches('analyseImage', '/giveImageAnalysis');
 intents.matches('getFunFact','/funFact');
-intents.matches(/\b(location)\b/i,'/getLoc');
+intents.matches('getloc','/getLoc');
 intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you said."))
 
 

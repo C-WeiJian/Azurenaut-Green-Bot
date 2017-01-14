@@ -97,6 +97,7 @@ bot.dialog('/sayHi', [
                         results = body.SrchResults.length;
                         if(results > 4) {
                             showLocationCards(session, body);
+                            break;
                         }
                 }).catch(function (err){
                         // An error occurred and the request failed
@@ -106,7 +107,7 @@ bot.dialog('/sayHi', [
                         // This is executed at the end, regardless of whether the request is successful or not
                         session.endDialog();
                 });
-            } while (results < 5);
+            } while (true);
             
         }
         else{
@@ -212,6 +213,7 @@ function showLocationCards(session, body) {
         .attachmentLayout(builder.AttachmentLayout.carousel)
         .attachments(cards);
     session.send(msg);
+
 }
 
 bot.dialog('/giveImageAnalysis', [

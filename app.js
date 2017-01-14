@@ -114,20 +114,20 @@ bot.dialog('/sayHi', [
             rp(options).then(function (body){
                 // The request is successful
                 console.log(body);
-                while (body.SrchResults.length < 5) {
-                    upplat = lat+0.01;
-                    lowlat = lat-0.01;
-                    upplon = lon+0.01;
-                    lowlon = lon-0.01;
-                    options = {
-                        uri: url,
-                        json: true // Returns the response in json
-                    }
-                    session.send("in while loop");
-                    rp(options).then(function (body){
+                // while (body.SrchResults.length < 5) {
+                //     upplat = lat+0.01;
+                //     lowlat = lat-0.01;
+                //     upplon = lon+0.01;
+                //     lowlon = lon-0.01;
+                //     options = {
+                //         uri: url,
+                //         json: true // Returns the response in json
+                //     }
+                //     session.send("in while loop");
+                //     rp(options).then(function (body){
                         
-                    });
-                }
+                //     });
+                // }
                 if (body.SrchResulfs.length >= 5) {showLocationCards(session, body);}
             }).catch(function (err){
                 // An error occurred and the request failed

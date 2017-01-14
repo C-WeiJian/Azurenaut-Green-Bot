@@ -126,17 +126,16 @@ bot.dialog('/sayHi', [
         builder.Prompts.text(session, "Send me your current location.");
     },
     function (session) {
-        session.send("getting coordinates");
-        //session.send(results.response);
+        session.send("Getting your coordinates...");
         if(session.message.entities.length != 0){
-            session.send("getting for real");
+            session.sendTyping();
             lat = session.message.entities[0].geo.latitude;
             lon = session.message.entities[0].geo.longitude;
             session.endDialog(lat+", "+lon);
-            var upplat = lat+0.1;
-            var lowlat = lat-0.1;
-            var upplon = lon+0.1;
-            var lowlon = lon-0.1;
+            var upplat = lat+0.01;
+            var lowlat = lat-0.01;
+            var upplon = lon+0.01;
+            var lowlon = lon-0.01;
             var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents="+lowlat+",%20"+lowlon+","+upplat+",%20"+upplon;
             // Build options for the request
             var options = {

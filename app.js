@@ -255,7 +255,7 @@ function showLocationCards(session, body) {
     session.send("These are some nearby recycling bin locations.");
     session.sendTyping();
     var cards = [];
-    for (i = 1; i < list; i++) {
+    for (i = 1; i < 2; i++) {
         var str = body.SrchResults[i].LatLng;
         var res = str.split(",");
         session.send(res[1]);

@@ -40,7 +40,7 @@ var bot = new builder.UniversalBot(connector);
 // If a Post request is made to /api/messages on port 3978 of our local server, then we pass it to the bot connector to handle
 server.post('/api/messages', connector.listen());
 
-const LuisModelUrl = 'https://api.projectoxford.ai/luis/v2.0/apps/f1fe89c1-2004-4300-bd08-fb0d423a9699?subscription-key=2dd582fbf9de43d8be36029312dc4cd5&verbose=true';
+const LuisModelUrl = "https://api.projectoxford.ai/luis/v2.0/apps/f1fe89c1-2004-4300-bd08-fb0d423a9699?subscription-key=d359dc8e09f140119492e810d01c51b6&verbose=true";
 var recogniser = new builder.LuisRecognizer(LuisModelUrl);
 
 var intents = new builder.IntentDialog({recognizers:[recogniser]});

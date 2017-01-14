@@ -47,9 +47,9 @@ var intents = new builder.IntentDialog({recognizers:[recogniser]});
 intents.matches(/\b(hi|hello|hey|sup)\b/i,'/sayHi');
 intents.matches('getNews', "/giveNews");
 intents.matches('analyseImage', "/giveImageAnalysis");
-intents.matches('getFunFact','/funFact')
+intents.matches('getFunFact','/funFact');
 intents.matches('getRLoc','/getLoc');
-intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you said."));
+intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you said."))
 
 
 
@@ -61,9 +61,11 @@ intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you
 
 
 
+bot.dialog('/', intents);
+
 bot.dialog('/sayHi', [
     function (session){
-        session.endDialog("Hello there! I'm a smart recycling bot. You can ask me if an item can be recycled, find out about nearest recycling points, and I can also give useful information :D")
+        session.endDialog("Hello there! I'm a smart recycling bot. You can ask me if an item can be recycled, find out about nearest recycling points, and I can also give useful information :D");
     }
 ]);
 
@@ -91,7 +93,9 @@ bot.dialog('/getLoc', [
             rp(options).then(function (body){
                 console.log(body);
                 results = body.SrchResults.length;
-                showLocationCards(session, body);
+                if(results > 4) {
+                    showLocationCards(session, body);
+                }
             }).catch(function (err){
                 // An error occurred and the request failed
                 console.log(err.message);
@@ -275,14 +279,11 @@ function imageresults(session, results, body){
         }
     }
     if(finalresults){
-        session.send("You can recycle this product!");
-        session.beginDialog('/getLoc')
+        session.endDialog("Recycle");
     }
     else{
-        session.send("Sorry, you can't recycle this product");
-        var index = (int) (Math.random()*7);
-        session.endDialog(facts[index]);
-     }  
+        session.endDialog("oh its nothing");
+    }  
 }
 
 bot.dialog('/funFact', [

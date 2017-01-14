@@ -223,7 +223,7 @@ bot.dialog('/giveNews', [
     }
 ]);
 
-function sendTopNews(session, body){
+function sendTopNews(session, results, body){
     session.send("Top news in " + results.response.entity + ": ");
     //Show user that we're processing by sending the typing indicator
     session.sendTyping();
@@ -253,7 +253,7 @@ function sendTopNews(session, body){
     session.send(msg);
 }
 
-function showLocationCards(session, results, body) {
+function showLocationCards(session, body) {
     session.send("These are some nearby recycling bin locations.");
     session.sendTyping();
     var cards = [];

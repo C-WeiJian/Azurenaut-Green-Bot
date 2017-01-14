@@ -1,15 +1,15 @@
 // Reference the packages we require so that we can use them in creating the bot
 var restify = require('restify');
 var builder = require('botbuilder');
-
 var rp = require('request-promise');
-var locationDialog = require('botbuilder-location');
 
 // Static variables that we can use anywhere in app.js
 var BINGNEWSKEY = 'cbfe538a5a9a44b0ae989bdaa13507df';
 var BINGCVKEY = 'a5ac77a11c4d4143be4b902dfd0724e8';
 var lat;
 var lon;
+var _eQuatorialEarthRadius = 6378.1370;
+var _d2r = (Math.PI / 180.0);
 
 //=========================================================
 // Bot Setup
@@ -35,7 +35,7 @@ const LuisModelUrl = 'https://api.projectoxford.ai/luis/v2.0/apps/f1fe89c1-2004-
 var recogniser = new builder.LuisRecognizer(LuisModelUrl);
 
 var intents = new builder.IntentDialog({recognizers:[recogniser]});
-intents.matches(/\b(hi|hello|hey)\b/i,'/sayHi');
+intents.matches(/\b(hi|hello|hey|sup)\b/i,'/sayHi');
 intents.matches('getNews', "/giveNews");
 intents.matches('analyseImage', "/giveImageAnalysis");
 intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you said."))
@@ -48,46 +48,9 @@ intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you
 
 // This is called the root dialog. It is the first point of entry for any message the bot receives
 
-var _eQuatorialEarthRadius = 6378.1370;
-var _d2r = (Math.PI / 180.0);
 
-function HaversineInKM(lat1, long1, lat2, long2)
-{
-    var dlong = (long2 - long1) * _d2r;
-    var dlat = (lat2 - lat1) * _d2r;
-    var a = Math.pow(Math.sin(dlat / 2.0), 2.0) + Math.cos(lat1 * _d2r) * Math.cos(lat2 * _d2r) * Math.pow(Math.sin(dlong / 2.0), 2.0);
-    var c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
-    var d = _eQuatorialEarthRadius * c;
-
-    return d;
-}
-
-function createHeroCard(session, block, street, postal, lat1, lon1, lat2, lon2) {
-    var distance = HaversineInKM(lat1, lon1, lat2, lon2);
-    var cards = [];
-    return new builder.HeroCard(session)
-        .title(block+" "+street)
-        .subtitle("Postal code: "+postal)
-        .text("Distance from here: "+distance)
-        .images([
-                //handle if thumbnail is empty
-                builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
-            ])
-        .buttons([
-                // Pressing this button opens a url to google maps
-                builder.CardAction.openUrl(session, "", "Go there")
-    ]);
-}
 
 bot.dialog('/', intents);
-
-bot.library(locationDialog.createLibrary("Avk7vrPfKhrsEOu4Gmzx1ASa7eIEvEWqvrtkFjh0VBxuZ9RNj_FHeW2emKD57XFU"));
-var options = {
-    prompt: "Where should I ship your order? Type or say an address.",
-    useNativeControl: false,
-    reverseGeocode: false
-};
-
 
 bot.dialog('/sayHi', [
     function (session){
@@ -310,3 +273,13 @@ function imageresults(session, results, body){
     }  
 }
 
+function HaversineInKM(lat1, long1, lat2, long2)
+{
+    var dlong = (long2 - long1) * _d2r;
+    var dlat = (lat2 - lat1) * _d2r;
+    var a = Math.pow(Math.sin(dlat / 2.0), 2.0) + Math.cos(lat1 * _d2r) * Math.cos(lat2 * _d2r) * Math.pow(Math.sin(dlong / 2.0), 2.0);
+    var c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+    var d = _eQuatorialEarthRadius * c;
+
+    return d;
+}

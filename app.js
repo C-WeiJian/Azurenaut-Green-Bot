@@ -180,7 +180,7 @@ function sendTopNews(session, results, body){
         .attachmentLayout(builder.AttachmentLayout.carousel)
         .attachments(cards);
     session.send(msg);
-}
+};
 
 function showLocationCards(session, body) {
     session.sendTyping();
@@ -211,16 +211,16 @@ function showLocationCards(session, body) {
         .attachments(cards);
     session.send(msg);
 
-}
+};
 
 bot.dialog('/giveImageAnalysis', [
     function (session){
         // Ask the user which category they would like
         // Choices are separated by |
-        builder.Prompts.text(session, "Please send me the url of the Image");
+        builder.Prompts.text(session, "Ok! Let me take a look at the object. :)");
     }, function (session, results, next){
         // The user chose a category
-        if (true) {
+        if (session.message.attachments[0].contentUrl != false) {
            //Show user that we're processing their request by sending the typing indicator
             session.sendTyping();
             // Build the url we'll be calling to get top news
@@ -254,7 +254,7 @@ bot.dialog('/giveImageAnalysis', [
                 });
         } else {
             // The user choses to quit
-            session.endDialog("Ok. Mission Aborted.");
+            session.endDialog("Hmmm. I can't see anything.");
         }
     }
 ]);
@@ -272,24 +272,24 @@ function imageresults(session, results, body){
     for (var i = 0; i < leng; i++){
         var article = allArticles[i].name;
         var confid = allArticles[i].confidence;
-        if (confid > 0.5){
+        if (confid > 0){
             if(article == "drink" || article == "beverage" || article == "soft drink"){
                 finalresults = true;
             }
         }
     }
     if(finalresults){
-        session.endDialog("Recycle");
+        session.endDialog("You can recycle it!");
     }
     else{
-        session.endDialog("oh its nothing");
+        session.endDialog("Hmmm. I don't think you can recycle this.");
     }  
 }
 
 bot.dialog('/funFact', [
-    function (session) {
-        var index = (int) (Math.random()*7);
-        session.send(facts[index]);
+    function (session){
+        var index = Math.floor(Math.random()*7);
+        session.endDialog(facts[index]);
     }
 ]);
 

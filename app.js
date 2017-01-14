@@ -60,9 +60,13 @@ intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you
 
 
 
-bot.dialog('/', intents);
-
 bot.dialog('/sayHi', [
+    function (session){
+        session.endDialog("Hello there! I'm a smart recycling bot. You can ask me if an item can be recycled, find out about nearest recycling points, and I can also give useful information :D")
+    }
+]);
+
+bot.dialog('/getLoc', [
     function (session){
         builder.Prompts.text(session, "Send me your current location.");
     },
@@ -86,9 +90,7 @@ bot.dialog('/sayHi', [
             rp(options).then(function (body){
                 console.log(body);
                 results = body.SrchResults.length;
-                if(results > 4) {
-                    showLocationCards(session, body);
-                }
+                showLocationCards(session, body);
             }).catch(function (err){
                 // An error occurred and the request failed
                 console.log(err.message);
@@ -272,11 +274,14 @@ function imageresults(session, results, body){
         }
     }
     if(finalresults){
-        session.endDialog("Recycle");
+        session.send("You can recycle this product!",);
+        session.beginDialog('/getLoc')
     }
     else{
-        session.endDialog("oh its nothing");
-    }  
+        session.send("Sorry, you can't recycle this product");
+        var index = (int) (Math.random()*7);
+        session.endDialog(facts[index]);
+     }  
 }
 
 bot.dialog('/funFact', [

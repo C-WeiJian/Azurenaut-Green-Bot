@@ -47,6 +47,7 @@ var recogniser = new builder.LuisRecognizer(LuisModelUrl);
 var intents = new builder.IntentDialog({recognizers:[recogniser]});
 intents.matches(/\b(hi|hello|hey|sup)\b/i,'/sayHi');
 intents.matches(/\b(yes|yup|okay)\b/i,'/sayYes');
+intents.matches(/\b(no)\b/i,'/sayNo');
 intents.matches('getNews', '/giveNews');
 intents.matches('analyseImage', '/giveImageAnalysis');
 intents.matches('getFunFact','/funFact');
@@ -72,7 +73,16 @@ bot.dialog('/sayYes',[
         want = false;
     }
     }
+]);
 
+bot.dialog('/sayNo',[
+    function (session) {
+        if(want){
+        session.send("Awwww. Do tell me if you change your mind.")
+        session.endDialog("Anyway, ")
+        want = false;
+    }
+    }
 ]);
 
 bot.dialog('/sayHi', [
@@ -92,10 +102,10 @@ bot.dialog('/getLoc', [
             lat = session.message.entities[0].geo.latitude;
             lon = session.message.entities[0].geo.longitude;
             var results = 0;
-            var upplat = lat+0.01;
-            var lowlat = lat-0.01;
-            var upplon = lon+0.01;
-            var lowlon = lon-0.01;
+            var upplat = lat+0.014;
+            var lowlat = lat-0.014;
+            var upplon = lon+0.014;
+            var lowlon = lon-0.014;
             var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents="+lowlat+",%20"+lowlon+","+upplat+",%20"+upplon;
             // Build options for the request
             var options = {

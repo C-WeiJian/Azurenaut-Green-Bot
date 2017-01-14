@@ -73,10 +73,10 @@ bot.dialog('/sayHi', [
             lat = session.message.entities[0].geo.latitude;
             lon = session.message.entities[0].geo.longitude;
             var results = 0;
-            var upplat = lat+0.01;
-            var lowlat = lat-0.01;
-            var upplon = lon+0.01;
-            var lowlon = lon-0.01;
+            var upplat = lat;
+            var lowlat = lat;
+            var upplon = lon;
+            var lowlon = lon;
 
             // session.endDialog(lat+", "+lon);
             do{
@@ -106,7 +106,7 @@ bot.dialog('/sayHi', [
                         // This is executed at the end, regardless of whether the request is successful or not
                         session.endDialog();
                 });
-            } while (results > 4);
+            } while (results < 5);
             
         }
         else{

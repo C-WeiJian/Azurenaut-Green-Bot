@@ -71,7 +71,7 @@ function createHeroCard(session, block, street, postal, lat1, lon1, lat2, lon2) 
         .text("Distance from here: "+distance)
         .images([
                 //handle if thumbnail is empty
-                builder.CardImage.create(session, "https://maps.googleapis.com/maps/api/streetview?size=600x300&location="+lat2+","+lon2+"&heading=151.78&pitch=-0.76&key=AIzaSyCJkSMIsK3ZPQHrBByW_nJTlamB3Bqe5JY")
+                builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
             ])
         .buttons([
                 // Pressing this button opens a url to google maps
@@ -107,6 +107,7 @@ bot.dialog('/sayHi', [
                     lon = 103.8524;
 
                     var cards = [];
+                    
 
                     for (i = 1; i < body.SrchResults.length; i++) {
                         var str = body.SrchResults[i].LatLng;

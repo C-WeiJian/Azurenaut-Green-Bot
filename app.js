@@ -265,43 +265,43 @@ function showLocationCards(session, body) {
 
         var distance = HaversineInKM(lat, lon, res[0], res[1]);
         session.send("gonna try building cards");
-        session.send(new builder.HeroCard(session)
-            .title("test")
-            .subtitle("test")
-            .images([
-                //handle if thumbnail is empty
-                builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
-            ])
-            .buttons([
-                // Pressing this button opens a url to the actual article
-                builder.CardAction.openUrl(session, "http://microsoft.com", "Full article")
-            ]));
-        session.send("sent a card");
-
-        cards.push(new builder.HeroCard(session)
-            .title("test")
-            .subtitle("test")
-            .images([
-                //handle if thumbnail is empty
-                builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
-            ])
-            .buttons([
-                // Pressing this button opens a url to the actual article
-                builder.CardAction.openUrl(session, "http://microsoft.com", "Full article")
-            ]));
-    
-        // cards.push(new builder.HeroCard(session)
-        //     .title(body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER+" "+body.SrchResults[i].ADDRESSSTREETNAME)
-        //     .subtitle("Postal code: "+body.SrchResults[i].ADDRESSPOSTALCODE)
-        //     .text("Distance from here: "+distance)
+        // session.send(new builder.HeroCard(session)
+        //     .title("test")
+        //     .subtitle("test")
         //     .images([
-        //             //handle if thumbnail is empty
-        //             builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
-        //         ])
+        //         //handle if thumbnail is empty
+        //         builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
+        //     ])
         //     .buttons([
-        //             // Pressing this button opens a url to google maps
-        //             builder.CardAction.openUrl(session, "", "Go there")
-        //     ]));    
+        //         // Pressing this button opens a url to the actual article
+        //         builder.CardAction.openUrl(session, "http://microsoft.com", "Full article")
+        //     ]));
+        // session.send("sent a card");
+
+        // cards.push(new builder.HeroCard(session)
+        //     .title("test")
+        //     .subtitle("test")
+        //     .images([
+        //         //handle if thumbnail is empty
+        //         builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
+        //     ])
+        //     .buttons([
+        //         // Pressing this button opens a url to the actual article
+        //         builder.CardAction.openUrl(session, "http://microsoft.com", "Full article")
+        //     ]));
+    
+        cards.push(new builder.HeroCard(session)
+            .title(body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER+" "+body.SrchResults[i].ADDRESSSTREETNAME)
+            .subtitle("Postal code: "+body.SrchResults[i].ADDRESSPOSTALCODE)
+            .text("Distance from here: "+distance)
+            .images([
+                    //handle if thumbnail is empty
+                    builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
+                ])
+            .buttons([
+                    // Pressing this button opens a url to google maps
+                    builder.CardAction.openUrl(session, "http://google.com", "Go there")
+            ]));    
     }
     var msg = new builder.Message(session)
         .textFormat(builder.TextFormat.xml)

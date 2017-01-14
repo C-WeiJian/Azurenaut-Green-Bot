@@ -274,7 +274,7 @@ function showLocationCards(session, body) {
             ])
             .buttons([
                 // Pressing this button opens a url to the actual article
-                builder.CardAction.openUrl(session, "", "Full article")
+                builder.CardAction.openUrl(session, "http://microsoft.com", "Full article")
             ]));
         session.send("sent a card");
 
@@ -287,7 +287,7 @@ function showLocationCards(session, body) {
             ])
             .buttons([
                 // Pressing this button opens a url to the actual article
-                builder.CardAction.openUrl(session, "", "Full article")
+                builder.CardAction.openUrl(session, "http://microsoft.com", "Full article")
             ]));
     
         // cards.push(new builder.HeroCard(session)

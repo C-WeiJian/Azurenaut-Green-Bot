@@ -265,7 +265,6 @@ function showLocationCards(session, body) {
         cards.push(new builder.HeroCard(session)
             .title("test")
             .subtitle("test")
-            .text("test")
             .images([
                 //handle if thumbnail is empty
                 builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")

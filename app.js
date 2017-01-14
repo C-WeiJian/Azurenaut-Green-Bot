@@ -261,19 +261,32 @@ function showLocationCards(session, body) {
         session.send(res[1]);
 
         var distance = HaversineInKM(lat, lon, res[0], res[1]);
-    
+
         cards.push(new builder.HeroCard(session)
-            .title(body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER+" "+body.SrchResults[i].ADDRESSSTREETNAME)
-            .subtitle("Postal code: "+body.SrchResults[i].ADDRESSPOSTALCODE)
-            .text("Distance from here: "+distance)
+            .title("test")
+            .subtitle("test")
+            .text("test")
             .images([
-                    //handle if thumbnail is empty
-                    builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
-                ])
+                //handle if thumbnail is empty
+                builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
+            ])
             .buttons([
-                    // Pressing this button opens a url to google maps
-                    builder.CardAction.openUrl(session, "", "Go there")
-            ]));    
+                // Pressing this button opens a url to the actual article
+                builder.CardAction.openUrl(session, "", "Full article")
+            ]));
+    
+        // cards.push(new builder.HeroCard(session)
+        //     .title(body.SrchResults[i].ADDRESSBLOCKHOUSENUMBER+" "+body.SrchResults[i].ADDRESSSTREETNAME)
+        //     .subtitle("Postal code: "+body.SrchResults[i].ADDRESSPOSTALCODE)
+        //     .text("Distance from here: "+distance)
+        //     .images([
+        //             //handle if thumbnail is empty
+        //             builder.CardImage.create(session, "http://www.shunvmall.com/data/out/193/47806048-random-image.png")
+        //         ])
+        //     .buttons([
+        //             // Pressing this button opens a url to google maps
+        //             builder.CardAction.openUrl(session, "", "Go there")
+        //     ]));    
     }
     var msg = new builder.Message(session)
         .textFormat(builder.TextFormat.xml)

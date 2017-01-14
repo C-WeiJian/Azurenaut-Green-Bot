@@ -264,8 +264,8 @@ function showLocationCards(session, body) {
         session.send(body.SrchResults[i].ADDRESSSTREETNAME)
 
         var distance = HaversineInKM(lat, lon, res[0], res[1]);
-
-        cards.push(new builder.HeroCard(session)
+        session.send("gonna try building cards");
+        cards.push(new builder.ThumbnailCard(session)
             .title("test")
             .subtitle("test")
             .images([

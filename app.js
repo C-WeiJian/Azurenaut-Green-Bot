@@ -18,6 +18,7 @@ var fact5 = "The domestic recycling rate fell to 19 per cent in 2014 from 22 per
 var fact6 = "Do remember to thoroughly rinse or empty all recyclables before you send them for recycling.";
 var fact7 = "Waste that has been contaminated with food such as waxed paper, used styrofoam or disposable plastic containers cannot be recycled. Cassette tapes, light bulbs, window glass, ceramics & tissue paper are also not recyclable.";
 var facts = [fact1, fact2, fact3, fact4, fact5, fact6, fact7];
+var want = false;
 
 
 //=========================================================
@@ -45,6 +46,7 @@ var recogniser = new builder.LuisRecognizer(LuisModelUrl);
 
 var intents = new builder.IntentDialog({recognizers:[recogniser]});
 intents.matches(/\b(hi|hello|hey|sup)\b/i,'/sayHi');
+intents.matches(/\b(yes|yup|okay)\b/i,'/sayYes');
 intents.matches('getNews', '/giveNews');
 intents.matches('analyseImage', '/giveImageAnalysis');
 intents.matches('getFunFact','/funFact');
@@ -62,6 +64,16 @@ intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you
 
 
 bot.dialog('/', intents);
+
+bot.dialog('/sayYes',[
+    function (session) {
+        if(want){
+        session.beginDialog('/getLoc');
+        want = false;
+    }
+    }
+
+]);
 
 bot.dialog('/sayHi', [
     function (session){
@@ -208,8 +220,9 @@ function imageresults(session, results, body){
         }
     }
     if(finalresults){
-        session.endDialog("You can recycle it! There are recycling bins nearby.");
-        session.beginDialog('/getLoc');
+        session.send("You can recycle it! There are recycling bins nearby. ");
+        session.endDialog("Do you want to find the nearest recycling collection point?");
+        want = true;
     }
     else{
         session.endDialog("Hmmm. I don't think you can recycle this.");

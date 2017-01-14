@@ -3,6 +3,7 @@ var restify = require('restify');
 var builder = require('botbuilder');
 
 var rp = require('request-promise');
+var locationDialog = require('botbuilder-location');
 
 // Static variables that we can use anywhere in app.js
 var BINGNEWSKEY = 'cbfe538a5a9a44b0ae989bdaa13507df';
@@ -80,6 +81,14 @@ function createHeroCard(session, block, street, postal, lat1, lon1, lat2, lon2) 
 
 bot.dialog('/', intents);
 
+bot.library(locationDialog.createLibrary("Avk7vrPfKhrsEOu4Gmzx1ASa7eIEvEWqvrtkFjh0VBxuZ9RNj_FHeW2emKD57XFU"));
+var options = {
+    prompt: "Where should I ship your order? Type or say an address.",
+    useNativeControl: false,
+    reverseGeocode: false
+};
+
+
 bot.dialog('/sayHi', [
     function (session){
         builder.Prompts.text(session, "Send me your current location.");
@@ -90,30 +99,37 @@ bot.dialog('/sayHi', [
             session.sendTyping();
             lat = session.message.entities[0].geo.latitude;
             lon = session.message.entities[0].geo.longitude;
+            var results = 0;
+
             // session.endDialog(lat+", "+lon);
-            var upplat = lat+0.2;
-            var lowlat = lat-0.2;
-            var upplon = lon+0.2;
-            var lowlon = lon-0.2;
-           // var results = 0;
-            var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents="+lowlat+",%20"+lowlon+","+upplat+",%20"+upplon;
+            do{
+                var upplat = lat+0.01;
+                var lowlat = lat-0.01;
+                var upplon = lon+0.01;
+                var lowlon = lon-0.01;
+           // 
+            
+                var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents="+lowlat+",%20"+lowlon+","+upplat+",%20"+upplon;
             // Build options for the request
-            var options = {
-                    uri: url,
-                    json: true // Returns the response in json
-            }
-            rp(options).then(function (body){
-                    console.log(body);
-                    //results = body.SrchResults.length;
-                    showLocationCards(session, body);
-            }).catch(function (err){
-                    // An error occurred and the request failed
-                    console.log(err.message);
-                    session.send("Argh, something went wrong. :( Try again?");
-            }).finally(function () {
-                    // This is executed at the end, regardless of whether the request is successful or not
-                    session.endDialog();
-            });
+                var options = {
+                        uri: url,
+                        json: true // Returns the response in json
+                }
+                rp(options).then(function (body){
+                        console.log(body);
+                        results = body.SrchResults.length;
+                        if(results > 4) {
+                            showLocationCards(session, body);
+                        }
+                }).catch(function (err){
+                        // An error occurred and the request failed
+                        console.log(err.message);
+                        session.send("Argh, something went wrong. :( Try again?");
+                }).finally(function () {
+                        // This is executed at the end, regardless of whether the request is successful or not
+                        session.endDialog();
+                });
+            } while (results > 4);
             
         }
         else{
@@ -121,54 +137,6 @@ bot.dialog('/sayHi', [
         }
     }
 ]);
-
-// bot.dialog('/sayHi', [
-//     function (session){
-//         builder.Prompts.text(session, "Send me your current location.");
-//     },
-//     function (session) {
-//         session.send("Getting your coordinates...");
-//         if(session.message.entities.length != 0){
-//             session.sendTyping();
-//             lat = session.message.entities[0].geo.latitude;
-//             lon = session.message.entities[0].geo.longitude;
-//             // session.endDialog(lat+", "+lon);
-//             var upplat = lat+0.1;
-//             var lowlat = lat-0.1;
-//             var upplon = lon+0.1;
-//             var lowlon = lon-0.1;
-//             var results = 0;
-//             while (results < 5) {
-//                 session.send("in while loop");
-//                 var url = "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName=recyclingbins&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjI4MSwidXNlcl9pZCI6MjgxLCJlbWFpbCI6Im9uZ2ppYXJ1aUBob3RtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC8xMC4wLjMuMTE6ODA4MFwvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTQ4NDI4Mzk1NCwiZXhwIjoxNDg0NzE1OTU0LCJuYmYiOjE0ODQyODM5NTQsImp0aSI6IjIxYjhlODgxODQ1MmVlODVkZmU2NjRlOTU1YjI5M2I4In0.E7DM-ism_4Vt6JE4zElfsC6-QhAsldmPSGuMZH9AvgQ&extents="+lowlat+",%20"+lowlon+","+upplat+",%20"+upplon;
-//                 // Build options for the request
-//                 var options = {
-//                     uri: url,
-//                     json: true // Returns the response in json
-//                 }
-//                 rp(options).then(function (body){
-//                     console.log(body);
-//                     results = body.SrchResults.length;
-//                     if (body.SrchResulfs.length >= 5) {showLocationCards(session, body);}
-//                 }).catch(function (err){
-//                     // An error occurred and the request failed
-//                     console.log(err.message);
-//                     session.send("Argh, something went wrong. :( Try again?");
-//                 }).finally(function () {
-//                     // This is executed at the end, regardless of whether the request is successful or not
-//                     session.endDialog();
-//                 });
-//                 upplat += 0.01;
-//                 lowlat -= 0.01;
-//                 upplon += 0.01;
-//                 lowlon -= 0.01;
-//             } 
-//         }
-//         else{
-//             session.endDialog("Sorry, I didn't get your location.");
-//         }
-//     }
-// ]);
 
 bot.dialog('/giveNews', [
     function (session){

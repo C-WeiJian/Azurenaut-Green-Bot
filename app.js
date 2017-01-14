@@ -48,7 +48,8 @@ intents.matches(/\b(hi|hello|hey|sup)\b/i,'/sayHi');
 intents.matches('getNews', "/giveNews");
 intents.matches('analyseImage', "/giveImageAnalysis");
 intents.matches('getFunFact','/funFact')
-intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you said."))
+intents.matches('getRLoc','/getLoc');
+intents.onDefault(builder.DialogAction.send("Sorry, I didn't understand what you said."));
 
 
 
@@ -274,7 +275,7 @@ function imageresults(session, results, body){
         }
     }
     if(finalresults){
-        session.send("You can recycle this product!",);
+        session.send("You can recycle this product!");
         session.beginDialog('/getLoc')
     }
     else{

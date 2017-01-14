@@ -276,6 +276,8 @@ function showLocationCards(session, body) {
                 // Pressing this button opens a url to the actual article
                 builder.CardAction.openUrl(session, "", "Full article")
             ]));
+        session.send("sent a card");
+
         cards.push(new builder.ThumbnailCard(session)
             .title("test")
             .subtitle("test")

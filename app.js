@@ -149,7 +149,7 @@ bot.dialog('/sayHi', [
                 console.log(body);
                 session.send(body.SrchResults[1].NAME);
 
-                showLocationCards(session, results, body);
+                showLocationCards(session, body);
 
                 // var cards = [];
 
@@ -223,7 +223,7 @@ bot.dialog('/giveNews', [
     }
 ]);
 
-function sendTopNews(session, results, body){
+function sendTopNews(session, body){
     session.send("Top news in " + results.response.entity + ": ");
     //Show user that we're processing by sending the typing indicator
     session.sendTyping();
